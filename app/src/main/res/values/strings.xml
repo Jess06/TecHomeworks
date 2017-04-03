@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Tareas del Tec</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="tareas_del_tec">Tareas del Tec</string>
+    <string name="nueva_tarea">Nueva tarea</string>
+    <string name="consultar">Consultar</string>
+    <string name="acerca_de">Acerca de...</string>
+    <string name="salir">Salir</string>
+    <string name="lista_de_tareas">Tareas próximas</string>
+
+    <array name="filtro">
+        <item>Nombre</item>
+        <item>Fecha</item>
+    </array>
+</resources>

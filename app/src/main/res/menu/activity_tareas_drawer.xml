@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_lista"
+            android:icon="@drawable/lista"
+            android:title="@string/lista_de_tareas" />
+        <item
+            android:id="@+id/nav_nueva"
+            android:icon="@drawable/nueva"
+            android:title="@string/nueva_tarea" />
+        <item
+            android:id="@+id/nav_consultar"
+            android:icon="@drawable/consultar"
+            android:title="@string/consultar" />
+        <item
+            android:id="@+id/nav_acercaDe"
+            android:icon="@drawable/about"
+            android:title="@string/acerca_de" />
+        <item
+            android:id="@+id/nav_salir"
+            android:icon="@drawable/logout"
+            android:title="@string/salir" />
+    </group>
+</menu>
