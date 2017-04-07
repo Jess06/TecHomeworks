@@ -21,6 +21,7 @@ public class AcercaDe extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Tareas.toolbar.setTitle(Tareas.toolbartitle);
                 getFragmentManager().popBackStack();
             }
         });

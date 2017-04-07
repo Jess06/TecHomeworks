@@ -15,19 +15,20 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="125dp"
+        android:layout_width="161dp"
         android:layout_height="71dp"
-        app:srcCompat="@drawable/logotec"
-        android:layout_weight="0.45" />
+        app:srcCompat="@drawable/us"
+        android:layout_weight="1.17" />
 
     <TextView
         android:layout_width="199dp"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:paddingTop="5sp"
+        android:paddingLeft="10sp"
         android:text="@string/tareas_del_tec"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/textView"
-        android:layout_weight="0.54" />
+         />
 
 </LinearLayout>

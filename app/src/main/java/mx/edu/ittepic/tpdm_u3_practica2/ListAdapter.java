@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,14 +18,15 @@ public class ListAdapter extends ArrayAdapter<String> {
     private final String[] itemname;
     private final Integer[] integers;
     private final String[] description;
-
-    public ListAdapter(Activity context, String[] itemname, String [] description, Integer[] integers) {
+    private final String[] materias;
+    public ListAdapter(Activity context, String[] itemname, String [] description, Integer[] integers, String [] materias) {
         super(context, R.layout.fila_lista, itemname);
 
         this.context=context;
         this.itemname=itemname;
         this.integers=integers;
         this.description=description;
+        this.materias=materias;
     }
 
     public View getView(int posicion, View view, ViewGroup parent){
@@ -35,10 +37,12 @@ public class ListAdapter extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.texto_principal);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         TextView etxDescripcion = (TextView) rowView.findViewById(R.id.texto_secundario);
+        TextView materia=(TextView)rowView.findViewById(R.id.tvmateria);
 
         txtTitle.setText(itemname[posicion]);
         imageView.setImageResource(integers[posicion]);
         etxDescripcion.setText(description[posicion]);
+        materia.setText("Materia: "+materias[posicion]);
 
         return rowView;
     }

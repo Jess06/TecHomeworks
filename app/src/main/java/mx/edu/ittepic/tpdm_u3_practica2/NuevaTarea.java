@@ -31,7 +31,7 @@ import java.util.Calendar;
 public class NuevaTarea extends Fragment {
     SimpleDateFormat formatoFecha;
     Calendar c;
-    EditText fecha, titulo, descripcion, notas;
+    EditText fecha, titulo, descripcion, notas,materia;
     Button aceptar, cancelar,foto;
     LinearLayout layout;
     Intent intent;
@@ -49,6 +49,7 @@ public class NuevaTarea extends Fragment {
         titulo = (EditText) view.findViewById(R.id.editText);
         descripcion = (EditText) view.findViewById(R.id.editText2);
         notas = (EditText) view.findViewById(R.id.editText4);
+        materia=(EditText) view.findViewById(R.id.materia);
         layout=(LinearLayout)view.findViewById(R.id.layo);
         Tareas.layo=layout;
         cancelar = (Button) view.findViewById(R.id.button);
@@ -56,7 +57,7 @@ public class NuevaTarea extends Fragment {
         foto=(Button)view.findViewById(R.id.foto);
         fecha=(EditText) view.findViewById(R.id.editText3);
         fecha.setKeyListener(null);
-        fecha.setText(formatoFecha.format(c.getTime()));
+        fecha.setText("");
         fecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +68,8 @@ public class NuevaTarea extends Fragment {
         cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Tareas.toolbar.setTitle(Tareas.toolbartitle);
+                Tareas.fab.show();
                 getFragmentManager().popBackStack();
             }
         });
@@ -81,35 +84,20 @@ public class NuevaTarea extends Fragment {
             @Override
             public void onClick(View v) {
                 if(titulo.getText().toString().isEmpty() || descripcion.getText().toString().isEmpty()
-                        || fecha.getText().toString().isEmpty() || notas.getText().toString().isEmpty()){
+                        || fecha.getText().toString().isEmpty() || notas.getText().toString().isEmpty() || materia.getText().toString().isEmpty()){
                     Toast.makeText(getContext(),"Verifique que los campos este llenos",Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(!insertTask(titulo,descripcion,fecha,notas)){
+                if(!insertTask(titulo,descripcion,fecha,notas,materia)){
                     Toast.makeText(getContext(),"Error al insertar",Toast.LENGTH_LONG).show();
                     return;
                 }
                 cleanCampos();
-                Toast.makeText(getContext(),"Se inserto correctamente",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(),"Se inserto correctamente",Toast.LENGTH_SHORT).show();
             }
         });
         return view;
     }
-    /*
-    @Override
-    public void onActivityResult(int requestCode,int resultCode,Intent data){
-        //super.onActivityResult(requestCode,requestCode,data);
-        Toast.makeText(getContext(),"Se metio al publico",Toast.LENGTH_SHORT).show();
-        if(resultCode== Activity.RESULT_OK && requestCode==cons){
-            Bundle ext= data.getExtras();
-            bmp=(Bitmap)ext.get("data");
-            img= newImageView();
-            imagenes.add(bmp);
-            img.setImageBitmap(bmp);
-
-            layo.addView(img);
-        }
-    }*/
 
     DatePickerDialog.OnDateSetListener datePickerDialog = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -126,14 +114,15 @@ public class NuevaTarea extends Fragment {
         new DatePickerDialog(getContext(), datePickerDialog,
                 c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
     }
-    private boolean insertTask(EditText t,EditText d,EditText f,EditText n){
+    private boolean insertTask(EditText t,EditText d,EditText f,EditText n, EditText m){
         try{
             SQLiteDatabase db= Tareas.conexion.getWritableDatabase();
-            String sql="INSERT INTO TAREA VALUES(NULL,'<TITULO>','<DESCRIPCION>','<FECHA>','<NOTAS>',<ESTATUS>)";
+            String sql="INSERT INTO TAREA VALUES(NULL,'<TITULO>','<DESCRIPCION>','<FECHA>','<NOTAS>',<ESTATUS>,'<MATERIA>')";
             sql=sql.replace("<TITULO>",t.getText().toString());
             sql= sql.replace("<DESCRIPCION>",d.getText().toString());
             sql= sql.replace("<FECHA>",f.getText().toString());
             sql= sql.replace("<NOTAS>",n.getText().toString());
+            sql=sql.replace("<MATERIA>", m.getText().toString());
             sql= sql.replace("<ESTATUS>","0");
             db.execSQL(sql);
 
@@ -141,7 +130,6 @@ public class NuevaTarea extends Fragment {
             Cursor result= db.rawQuery(sql,null);
             result.moveToFirst();
             int tam=result.getInt(0);
-            //Toast.makeText(getContext(),"Ultimo id"+tam,Toast.LENGTH_LONG).show();
 
             if(Tareas.imagenes.size()!=0){
                 for(int i=0;i<Tareas.imagenes.size();i++){
@@ -155,12 +143,9 @@ public class NuevaTarea extends Fragment {
             result=db.rawQuery(sql,null);
             result.moveToFirst();
             int numero= result.getInt(0);
-            Toast.makeText(getContext(),"Numero de imagenes: "+numero,Toast.LENGTH_LONG).show();
 
             db.close();
-            //Toast.makeText(NuevaTarea.this,"Se inserto correctamente",Toast.LENGTH_LONG).show();
         }catch (SQLException e){
-            //Toast.makeText(Principal.this,"Error al insertar",Toast.LENGTH_LONG).show();
             Log.e("Error :c ",e.getMessage());
             return false;
         }
@@ -176,9 +161,10 @@ public class NuevaTarea extends Fragment {
         descripcion.setText("");
         fecha.setText("");
         notas.setText("");
-        layout= new LinearLayout(this.getContext());
-        Tareas.layo= new LinearLayout(this.getContext());
-        Tareas.imagenes= new ArrayList<Bitmap>();
+        materia.setText("");
+        layout.removeAllViews();
+        Tareas.layo.removeAllViews();
+        Tareas.imagenes.removeAll(Tareas.imagenes);
     }
 
 }

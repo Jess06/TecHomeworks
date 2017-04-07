@@ -12,7 +12,12 @@
     <string name="lista_de_tareas">Tareas próximas</string>
 
     <array name="filtro">
+        <item>Todas</item>
         <item>Nombre</item>
         <item>Fecha</item>
+        <item>Materia</item>
+        <item>Terminadas</item>
+        <item>Retrasadas</item>
+        <item>Pendientes</item>
     </array>
 </resources>

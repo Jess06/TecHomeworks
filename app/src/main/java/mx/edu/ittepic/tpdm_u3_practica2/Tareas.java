@@ -3,6 +3,7 @@ package mx.edu.ittepic.tpdm_u3_practica2;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ public class Tareas extends AppCompatActivity
 
     public static Toolbar toolbar;
     NavigationView navigationView;
-
+    public static String toolbartitle="";
     ImageView img;
     Bitmap bmp;
     public static LinearLayout layo;
@@ -40,18 +41,20 @@ public class Tareas extends AppCompatActivity
 
     public static ArrayList<Bitmap> imagenes= new ArrayList<Bitmap>();
     public static ConexionBD conexion;
-
+    public static FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        conexion= new ConexionBD(this,"BD_FOTOS2",null,1);
+        conexion= new ConexionBD(this,"BD_FOTOS4",null,1);
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_tareas);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Tareas próximas");
-        //openFragment(0);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,35 +74,6 @@ public class Tareas extends AppCompatActivity
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ListaTareas(), "Tareas próximas").commit();
         }
-        ActivityCompat.requestPermissions(Tareas.this,
-                new String[]{Manifest.permission.CAMERA},
-                1);
-
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(Tareas.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -113,7 +87,6 @@ public class Tareas extends AppCompatActivity
 
             layo.addView(img);
         }
-        Toast.makeText(this,"Se metio al protected",Toast.LENGTH_LONG).show();
     }
     public ImageView newImageView(){
         ImageView iv = new ImageView(this);
@@ -131,8 +104,12 @@ public class Tareas extends AppCompatActivity
 
         if (count == 0) {
             super.onBackPressed();
+            toolbar.setTitle(toolbartitle);
             //additional code
         } else {
+            Toast.makeText(this,toolbartitle,Toast.LENGTH_LONG).show();
+            toolbar.setTitle(toolbartitle);
+
             getFragmentManager().popBackStack();
         }
 
@@ -189,22 +166,27 @@ public class Tareas extends AppCompatActivity
         switch(n){
             case 0:
                 title = "Tareas próximas";
+                fab.show();
                 fragmentTransaction.replace(R.id.content_frame, new ListaTareas(), title);
                 break;
             case 1:
                 title = "Nueva tarea";
+                fab.hide();
                 fragmentTransaction.replace(R.id.content_frame, new NuevaTarea(), title);
                 break;
             case 2:
                 title = "Consultar";
+                fab.show();
                 fragmentTransaction.replace(R.id.content_frame, new Consultar(), title);
                 break;
             case 3:
                 title = "Acerca de...";
+                fab.show();
                 fragmentTransaction.replace(R.id.content_frame, new AcercaDe(), title);
                 break;
         }
         fragmentTransaction.addToBackStack(title);
+        toolbartitle=toolbar.getTitle().toString();
         toolbar.setTitle(title);
         fragmentTransaction.commit();
     }

@@ -16,27 +16,12 @@
         android:text="Buscar por: "
         android:id="@+id/textView8" />
 
-    <RadioGroup
+    <Spinner
+        android:id="@+id/spinner"
+        android:entries="@array/filtro"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/radioGroup"
-        android:orientation="horizontal"
-        android:weightSum="1">
-
-        <RadioButton
-            android:text="Nombre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButton"
-            android:layout_weight="0.19" />
-
-        <RadioButton
-            android:text="Fecha"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButton2"/>
-
-    </RadioGroup>
+        android:layout_height="wrap_content" />
 
     <Space
         android:layout_width="match_parent"

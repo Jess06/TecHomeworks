@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,8 +22,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class VerTarea extends Fragment {
-
-    EditText titulo, descripcion, notas, fecha;
+    CheckBox cb;
+    EditText titulo, descripcion, notas, fecha,materia;
     Button aceptar;
     LinearLayout layout;
     ArrayList<Bitmap> imagenes= new ArrayList<Bitmap>();
@@ -34,31 +35,55 @@ public class VerTarea extends Fragment {
         View view = inflater.inflate(R.layout.fragment_ver_tarea, container, false);;
         titulo = (EditText) view.findViewById(R.id.editText9);
         layout=(LinearLayout)view.findViewById(R.id.layo2);
-
+        cb=(CheckBox)view.findViewById(R.id.cb);
         descripcion = (EditText) view.findViewById(R.id.editText10);
         notas = (EditText) view.findViewById(R.id.editText12);
         aceptar = (Button) view.findViewById(R.id.button5);
         fecha=(EditText) view.findViewById(R.id.editText11);
-
+        materia=(EditText)view.findViewById(R.id.materia2);
         titulo.setKeyListener(null);
         descripcion.setKeyListener(null);
         fecha.setKeyListener(null);
         notas.setKeyListener(null);
+        materia.setKeyListener(null);
 
-        Tareas.toolbar.setTitle(ListaTareas.title);
         //fecha.setText(ListaTareas.data[1]);
 
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(cb.isChecked()){
+                    if(!updateStatus(Tareas.id)){
+                        Toast.makeText(getContext(),"¡Error al actualizar el estatus!",Toast.LENGTH_LONG).show();
+                        getFragmentManager().popBackStack();
+                        return;
+                    }else if(cb.isChecked()){
+                        getFragmentManager().popBackStack();
+                        return;
+                    }
+                }
                 Tareas.id=0;
+
                 getFragmentManager().popBackStack();
             }
         });
         if(!selectTask(Tareas.id)){
             Toast.makeText(getContext(),"Hubo un error",Toast.LENGTH_LONG).show();
         }
+        Tareas.toolbar.setTitle(titulo.getText().toString());
         return view;
+    }
+    private boolean updateStatus(int id){
+        try {
+            SQLiteDatabase db= Tareas.conexion.getWritableDatabase();
+            String sql="UPDATE TAREA SET ESTATUS=1 WHERE ID_TAREA="+id;
+            db.execSQL(sql);
+        }catch (SQLException e){
+            Log.e("Error","noo");
+            return false;
+        }
+        return true;
     }
     private boolean selectTask(int id){
         try {
@@ -74,10 +99,14 @@ public class VerTarea extends Fragment {
             descripcion.setText(result.getString(2));
             fecha.setText(result.getString(3));
             notas.setText(result.getString(4));
+            if(Integer.parseInt(result.getString(5))==1){
+                cb.setChecked(true);
+                cb.setEnabled(false);
+            }
+            materia.setText(result.getString(6));
 
             sql="SELECT IMAGEN FROM IMAGEN WHERE ID_TAREA= "+id;
             result=db.rawQuery(sql,null);
-            Toast.makeText(getContext(),"Imagenes: "+result.getCount(),Toast.LENGTH_LONG).show();
             while(result.moveToNext()){
                 imagenes.add(getImage(result.getBlob(0)));
             }

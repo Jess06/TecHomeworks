@@ -16,12 +16,13 @@
             android:id="@+id/textView2" />
 
         <EditText
+            android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="Título de la tarea"
+            android:capitalize="sentences"
             android:ems="10"
-            android:id="@+id/editText" />
+            android:hint="Título de la tarea"
+            android:inputType="textPersonName" />
 
         <TextView
             style="@style/labels"
@@ -31,12 +32,13 @@
             android:id="@+id/textView3" />
 
         <EditText
+            android:id="@+id/editText2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
+            android:capitalize="sentences"
             android:ems="10"
             android:hint="Descipción de la tarea"
-            android:id="@+id/editText2" />
+            android:inputType="textMultiLine" />
 
         <TextView
             style="@style/labels"
@@ -49,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="date"
+            android:hint="YYYY-MM-DD"
             android:ems="10"
             android:id="@+id/editText3" />
 
@@ -60,12 +63,29 @@
             android:id="@+id/textView5" />
 
         <EditText
+            android:id="@+id/editText4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
+            android:capitalize="sentences"
             android:ems="10"
-            android:id="@+id/editText4"
-            android:hint="Notas extras"/>
+            android:hint="Notas extras"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/textView10"
+            style="@style/labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Materia" />
+
+        <EditText
+            android:id="@+id/materia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:capitalize="sentences"
+            android:ems="10"
+            android:hint="Materia"
+            android:inputType="textPersonName" />
 
         <LinearLayout
             android:layout_width="match_parent"
