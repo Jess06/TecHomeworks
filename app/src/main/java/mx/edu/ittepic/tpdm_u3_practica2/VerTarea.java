@@ -1,24 +1,40 @@
 package mx.edu.ittepic.tpdm_u3_practica2;
 
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class VerTarea extends Fragment {
 
     EditText titulo, descripcion, notas, fecha;
     Button aceptar;
-
+    LinearLayout layout;
+    ArrayList<Bitmap> imagenes= new ArrayList<Bitmap>();
+    ImageView img;
+    Bitmap bmp;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ver_tarea, container, false);;
         titulo = (EditText) view.findViewById(R.id.editText9);
+        layout=(LinearLayout)view.findViewById(R.id.layo2);
+
         descripcion = (EditText) view.findViewById(R.id.editText10);
         notas = (EditText) view.findViewById(R.id.editText12);
         aceptar = (Button) view.findViewById(R.id.button5);
@@ -29,17 +45,66 @@ public class VerTarea extends Fragment {
         fecha.setKeyListener(null);
         notas.setKeyListener(null);
 
-        Tareas.toolbar.setTitle(ListaTareas.data[0]);
-        fecha.setText(ListaTareas.data[1]);
+        Tareas.toolbar.setTitle(ListaTareas.title);
+        //fecha.setText(ListaTareas.data[1]);
 
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Tareas.id=0;
                 getFragmentManager().popBackStack();
             }
         });
-
+        if(!selectTask(Tareas.id)){
+            Toast.makeText(getContext(),"Hubo un error",Toast.LENGTH_LONG).show();
+        }
         return view;
+    }
+    private boolean selectTask(int id){
+        try {
+            SQLiteDatabase db=Tareas.conexion.getReadableDatabase();
+            String sql="SELECT * FROM TAREA WHERE ID_TAREA= "+id;
+            Cursor result=db.rawQuery(sql,null);
+            result.moveToFirst();
+            if(result.getCount()==0){
+                Log.e("Error ","Retorno nulo");
+                return false;
+            }
+            titulo.setText(result.getString(1));
+            descripcion.setText(result.getString(2));
+            fecha.setText(result.getString(3));
+            notas.setText(result.getString(4));
+
+            sql="SELECT IMAGEN FROM IMAGEN WHERE ID_TAREA= "+id;
+            result=db.rawQuery(sql,null);
+            Toast.makeText(getContext(),"Imagenes: "+result.getCount(),Toast.LENGTH_LONG).show();
+            while(result.moveToNext()){
+                imagenes.add(getImage(result.getBlob(0)));
+            }
+
+            for(int i=0;i<imagenes.size();i++){
+                img= newImageView();
+                img.setImageBitmap(imagenes.get(i));
+                layout.addView(img);
+            }
+            db.close();
+        }catch (SQLException e){
+            Log.e("Error :c ",e.getMessage());
+            return false;
+        }
+        return true;
+    }
+    public static Bitmap getImage(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+    private ImageView newImageView(){
+        ImageView iv = new ImageView(getContext());
+        int width = 800;//ancho
+        int height =600;//altura
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+        parms.setMargins(0,0,10,0);
+        iv.setLayoutParams(parms);
+        return iv;
     }
 
 }

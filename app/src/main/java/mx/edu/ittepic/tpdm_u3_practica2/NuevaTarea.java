@@ -134,7 +134,7 @@ public class NuevaTarea extends Fragment {
             sql= sql.replace("<DESCRIPCION>",d.getText().toString());
             sql= sql.replace("<FECHA>",f.getText().toString());
             sql= sql.replace("<NOTAS>",n.getText().toString());
-            sql= sql.replace("<ESTATUS>","1");
+            sql= sql.replace("<ESTATUS>","0");
             db.execSQL(sql);
 
             sql="SELECT COUNT(ID_TAREA) FROM TAREA";

@@ -16,16 +16,18 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class ListaTareas extends Fragment {
 
     ListAdapter adapter;
 
-    //String [] tarea = {"Soy una tarea que esta bien pero bien larga     ", "Tarea 2"};
-    //String [] fecha = {"01/04/2017", "07/05/2017"};
-    //Integer [] icon = {R.drawable.cancelar, R.drawable.terminado};
+
     String [] ids;
     String []titulo;
     String [] estatus;
@@ -34,13 +36,16 @@ public class ListaTareas extends Fragment {
     Integer [] icon;
 
     ListView lista;
-    public static String data[];
-
+    public static String title="";
+    SimpleDateFormat formatoFecha;
+    Calendar c;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lista_tareas, container, false);
         lista = (ListView) view.findViewById(R.id.lista);
+        formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+        c = Calendar.getInstance();
         adapter= null;
             if(searchTask().get(0)!=null){
                 ids=searchTask().get(0);
@@ -48,12 +53,31 @@ public class ListaTareas extends Fragment {
                 estatus=searchTask().get(2);
                 fecha=searchTask().get(3);
                 icon= new Integer[estatus.length];
+
+                Date date1=null,date2=null;
                 for(int s= 0; s<estatus.length;s++){
-                    if(Integer.parseInt(estatus[s])==0){
+                    try {
+                        date1 = formatoFecha.parse(formatoFecha.format(c.getTime()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        date2 = formatoFecha.parse(fecha[s]);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    if(date1.before(date2) || date1.equals(date2) && Integer.parseInt(estatus[s])==0){
+                        icon[s]=R.drawable.agendada;
+                    }else if(Integer.parseInt(estatus[s])==1){
+                        icon[s]=R.drawable.terminado;
+                    }else if(date1.after(date2) && Integer.parseInt(estatus[s])==0){
+                        icon[s]=R.drawable.cancelar;
+                    }
+                    /*if(Integer.parseInt(estatus[s])==0){
                         icon[s]=R.drawable.cancelar;
                     }else{
                         icon[s]=R.drawable.terminado;
-                    }
+                    }*/
             }
             adapter= new ListAdapter((Activity)getContext(),titulo,fecha,icon);
         }
@@ -62,7 +86,9 @@ public class ListaTareas extends Fragment {
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                sendData(position);
+                //sendData(position);
+                Tareas.id=Integer.parseInt(ids[position]);
+                title=titulo[position];
                 showTask();
             }
         });
@@ -78,14 +104,14 @@ public class ListaTareas extends Fragment {
         fragmentTransaction.commit();
     }
 
-    public String [] sendData(int position){
+    /*public String [] sendData(int position){
         data = new String[2];
 
         data[0] = titulo[position];
         data[1] = fecha[position];
 
         return data;
-    }
+    }*/
     private ArrayList<String []> searchTask(){
         ArrayList<String[]> array = new ArrayList<String[]>();
         String id[]=null;String []t=null;String [] est= null;String fe[]=null;
@@ -93,7 +119,7 @@ public class ListaTareas extends Fragment {
             SQLiteDatabase db= Tareas.conexion.getReadableDatabase();
             String sql="";
             Cursor result;
-            sql="SELECT ID_TAREA,TITULO, ESTATUS,FECH_ENTREGA FROM TAREA WHERE date(FECH_ENTREGA) BETWEEN date('now') AND DATE('now','+1 day')";
+            sql="SELECT ID_TAREA,TITULO, ESTATUS,FECH_ENTREGA FROM TAREA WHERE date(FECH_ENTREGA) BETWEEN date('now') AND DATE('now','+3 days')";
             result=db.rawQuery(sql,null);
             if(result.getCount()<= 0){
                 Log.e("Error","El cursor es cero");

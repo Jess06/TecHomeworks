@@ -35,6 +35,7 @@ public class Tareas extends AppCompatActivity
     ImageView img;
     Bitmap bmp;
     public static LinearLayout layo;
+    public static int id=0;
     final static int cons=0;
 
     public static ArrayList<Bitmap> imagenes= new ArrayList<Bitmap>();
